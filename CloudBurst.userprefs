@@ -1,0 +1,16 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/CloudCreator.cs">
+    <Files>
+      <File FileName="Assets/Scripts/PlayerMovement.cs" Line="55" Column="4" />
+      <File FileName="Assets/Scripts/CloudCreator.cs" Line="20" Column="49" />
+      <File FileName="Assets/Scripts/BallMovement.cs" Line="38" Column="32" />
+      <File FileName="Assets/Scripts/Clouds.cs" Line="54" Column="11" />
+      <File FileName="Assets/Scripts/Growth.cs" Line="18" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
