@@ -44,7 +44,6 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\BallMovement.cs" />
      <Compile Include="Assets\Scripts\CloudCreator.cs" />
      <Compile Include="Assets\Scripts\Clouds.cs" />
      <Compile Include="Assets\Scripts\Growth.cs" />
