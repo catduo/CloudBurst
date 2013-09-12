@@ -1,8 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2008
 
-Project("{DC621EB8-F812-ACE8-44D1-E667ABD13570}") = "CloudBurst", "Assembly-CSharp-firstpass-vs.csproj", "{8D46D836-7D4E-ABE3-68BE-9C2033EA878D}"
-EndProject
 Project("{DC621EB8-F812-ACE8-44D1-E667ABD13570}") = "CloudBurst", "Assembly-CSharp-vs.csproj", "{AD2CEB10-BB5D-2282-D274-F18D36F4BF79}"
 EndProject
 Global
@@ -11,10 +9,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8D46D836-7D4E-ABE3-68BE-9C2033EA878D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D46D836-7D4E-ABE3-68BE-9C2033EA878D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D46D836-7D4E-ABE3-68BE-9C2033EA878D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D46D836-7D4E-ABE3-68BE-9C2033EA878D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AD2CEB10-BB5D-2282-D274-F18D36F4BF79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AD2CEB10-BB5D-2282-D274-F18D36F4BF79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD2CEB10-BB5D-2282-D274-F18D36F4BF79}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -23,7 +17,7 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-																	GlobalSection(MonoDevelopProperties) = preSolution
+																				GlobalSection(MonoDevelopProperties) = preSolution
 =======
 																			GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> 8a2ff31fbd40b5c99d2018adef4a82271ea028a3
