@@ -28,7 +28,7 @@ public class Clouds : MonoBehaviour {
 		ground = GameObject.Find ("Ground").transform;
 		precipitate = GetComponent<ParticleSystem>();
 		scale = Random.value * 2F + 0.5F;
-		transform.localScale = new Vector3(scale * transform.localScale.x, scale * transform.localScale.y, transform.localScale.z);
+		transform.localScale = new Vector3(transform.localScale.x, scale * transform.localScale.y, scale * transform.localScale.z);
 	}
 	
 	void Update() {
