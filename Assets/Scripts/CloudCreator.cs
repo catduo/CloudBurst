@@ -41,6 +41,7 @@ public class CloudCreator : MonoBehaviour {
 					break;
 				};
 				createdCloud = (GameObject) GameObject.Instantiate(cloud, new Vector3(Random.value * 18F - 9F, Random.value * 5F + 6F, zIndex * cloudSpacing), Quaternion.identity);
+				createdCloud.transform.eulerAngles = new Vector3(270, 90, 0);
 				createdCloud.transform.parent = transform;
 			}
 			count++;
@@ -52,7 +53,8 @@ public class CloudCreator : MonoBehaviour {
 		if(Time.time > timer + delayTime){
 			for(int i = 0; i < transform.childCount; i++){
 				if(transform.GetChild(i).position.z > 0) {
-					transform.GetChild(i).Translate (new Vector3(0,0,-cloudSpacing));
+					Transform thisCloud = transform.GetChild(i);
+					thisCloud.position = new Vector3(thisCloud.position.x, thisCloud.position.y, thisCloud.position.z - cloudSpacing);
 				}
 			}
 			for(float i = 0; i < count; i++){
@@ -77,6 +79,7 @@ public class CloudCreator : MonoBehaviour {
 					break;
 				};
 				createdCloud = (GameObject) GameObject.Instantiate(cloud, new Vector3(Random.value * 18F - 9F, Random.value * 5F + 6F, 3 * cloudSpacing), Quaternion.identity);
+				createdCloud.transform.eulerAngles = new Vector3(270, 90, 0);
 				createdCloud.transform.parent = transform;
 			}
 			count++;
