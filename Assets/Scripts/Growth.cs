@@ -9,6 +9,7 @@ public class Growth : MonoBehaviour {
 	void Start () {
 		for(int i = 0; i < 100; i++){
 			plants[i] = transform.GetChild(i).GetComponent<MeshRenderer>();
+			plants[i].enabled = false;
 		}
 	}
 	
