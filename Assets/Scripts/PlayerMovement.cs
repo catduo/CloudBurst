@@ -146,13 +146,17 @@ public class PlayerMovement : MonoBehaviour {
 		
 		//the player can only jump if on the ground
 		if(grounded && Input.GetAxis("Vertical") > 0){
-			grounded = false;
-			rigidbody.AddForce(new Vector3(rigidbody.velocity.x, jumpSpeed, 0));
 			animation = "jumping";
 			frame = 0;
+			Jump ();
 		}
 		
 		//press down grow plant?
+	}
+	
+	void Jump () {
+		grounded = false;
+		rigidbody.velocity = new Vector3(rigidbody.velocity.x, jumpSpeed, 0);
 	}
 	
 	void OnCollisionEnter (Collision collision) {
@@ -162,16 +166,17 @@ public class PlayerMovement : MonoBehaviour {
 			grounded = true;
 		}
 		if(collision.transform.parent == clouds) {
-			rigidbody.AddForce(new Vector3(rigidbody.velocity.x, jumpSpeed, 0));
+			rigidbody.velocity = new Vector3(rigidbody.velocity.x, jumpSpeed, 0);
 		}
 	}
 	
 	
 	void OnTriggerEnter (Collider other) {
-		if(other.name == "BasicCloud(Clone)"){
+		if(other.name == "BasicCloud(Clone)" || other.name == "BasicCloud"){
+			Destroy(other.gameObject);
+			Jump ();
 		}
 		else{
-			Destroy(other.gameObject);
 		}
 	}
 }

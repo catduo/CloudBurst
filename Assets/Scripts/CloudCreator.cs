@@ -22,18 +22,18 @@ public class CloudCreator : MonoBehaviour {
 		for(float zIndex = 0; zIndex < 3; zIndex++){
 			for(float i = 0; i < count; i++){
 				switch(Mathf.FloorToInt(Random.value * count - 4)){
-				case 3:
-					cloud = iceCloud;
+				case 0:
+					cloud = basicCloud;
 					break;
-				case 4:
-					cloud = lightningCloud;
+				case 1:
+					cloud = darkCloud;
 					break;
 				default:
-					cloud = basicCloud;
+					cloud = blackCloud;
 					break;
 				};
 				createdCloud = (GameObject) GameObject.Instantiate(cloud, new Vector3(Random.value * 18F - 9F, Random.value * 5F + 6F, zIndex * cloudSpacing), Quaternion.identity);
-				createdCloud.transform.eulerAngles = new Vector3(270, 90, 0);
+				createdCloud.transform.eulerAngles = new Vector3(270, 0, 0);
 				createdCloud.transform.parent = transform;
 			}
 			count++;
