@@ -3,96 +3,13 @@ using System.Collections;
 
 public class Growth : MonoBehaviour {
 	
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
-	private Transform plant;
+	private MeshRenderer[] plants = new MeshRenderer[100];
 	
 	// Use this for initialization
 	void Start () {
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
-		plant = transform.GetChild(0);
+		for(int i = 0; i < 100; i++){
+			plants[i] = transform.GetChild(i).GetComponent<MeshRenderer>();
+		}
 	}
 	
 	// Update is called once per frame
@@ -102,7 +19,6 @@ public class Growth : MonoBehaviour {
 	
 	void OnTriggerEnter (Collider other) {
 		if(other.name == "BasicCloud(Clone)"){
-			plant.position += new Vector3(0F, 0.3F, 0F);
 		}
 		Destroy(other.gameObject);
 	}

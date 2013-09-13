@@ -4,7 +4,8 @@ using System.Collections;
 public class CloudCreator : MonoBehaviour {
 	
 	public GameObject basicCloud;
-	public GameObject snowCloud;
+	public GameObject darkCloud;
+	public GameObject blackCloud;
 	public GameObject lightningCloud;
 	public GameObject iceCloud;
 	public GameObject acidCloud;
@@ -21,15 +22,6 @@ public class CloudCreator : MonoBehaviour {
 		for(float zIndex = 0; zIndex < 3; zIndex++){
 			for(float i = 0; i < count; i++){
 				switch(Mathf.FloorToInt(Random.value * count - 4)){
-				case 0:
-					cloud = basicCloud;
-					break;
-				case 1:
-					cloud = acidCloud;
-					break;
-				case 2:
-					cloud = snowCloud;
-					break;
 				case 3:
 					cloud = iceCloud;
 					break;
@@ -64,9 +56,6 @@ public class CloudCreator : MonoBehaviour {
 					break;
 				case 1:
 					cloud = acidCloud;
-					break;
-				case 2:
-					cloud = snowCloud;
 					break;
 				case 3:
 					cloud = iceCloud;
