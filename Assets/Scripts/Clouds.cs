@@ -44,8 +44,12 @@ public class Clouds : MonoBehaviour {
 	void PlayerContact () {
 		//when hit the cloud tells the plants to grow, gives score, animates the particle effects, and destroys the image and colliders.
 		plants.SendMessage("Grow");
-		GUIControls.score += 100;
-		guiControls.SendMessage("UpdateScore");
+		PlayerMovement.combo++;
+		if(PlayerMovement.combo > 0){
+			guiControls.gameObject.SendMessage("Combo");
+		}
+		GUIControls.score += 10 * PlayerMovement.combo;
+		guiControls.gameObject.SendMessage("UpdateScore");
 		precipitate.Play();
 		poof.Play();
 		Destroy(transform.GetChild(0).gameObject);

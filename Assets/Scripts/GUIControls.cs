@@ -7,6 +7,7 @@ public class GUIControls : MonoBehaviour {
 	private GameObject pauseButton;
 	private GameObject rightButton;
 	private GameObject scoreText;
+	private GameObject comboText;
 	public GameObject player;
 	static public int score;
 
@@ -16,10 +17,15 @@ public class GUIControls : MonoBehaviour {
 		rightButton = GameObject.Find("RightButton");
 		pauseButton = GameObject.Find("PauseButton");
 		scoreText = GameObject.Find("Score");
+		comboText = GameObject.Find("ComboText");
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		//fade out the combo text
+		if(comboText.GetComponent<TextMesh>().color.a > 0){
+			comboText.GetComponent<TextMesh>().color = new Color(comboText.GetComponent<TextMesh>().color.r, comboText.GetComponent<TextMesh>().color.g, comboText.GetComponent<TextMesh>().color.b, comboText.GetComponent<TextMesh>().color.a - 0.05F);
+		}
 		//find everything that is being touched and let it know
 		foreach (Touch touch in Input.touches) {
             Ray ray = Camera.main.ScreenPointToRay(touch.position);
@@ -85,5 +91,13 @@ public class GUIControls : MonoBehaviour {
 	//update the score text
 	void UpdateScore () {
 		scoreText.guiText.text = "Score: " + score.ToString();
+	}
+	
+	//when a combo happens display the combo count
+	void Combo () {
+		comboText.transform.position = player.transform.position;
+		comboText.GetComponent<TextMesh>().color = new Color(comboText.GetComponent<TextMesh>().color.r, comboText.GetComponent<TextMesh>().color.g, comboText.GetComponent<TextMesh>().color.b, 1F);
+		comboText.GetComponent<TextMesh>().fontSize = 15 + PlayerMovement.combo;
+		comboText.GetComponent<TextMesh>().text = "x" + PlayerMovement.combo.ToString();
 	}
 }

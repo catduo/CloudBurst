@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour {
 	private Vector2[] inAirLeft = new Vector2[] {new Vector2(0.2F,0F),new Vector2(0.4F,0F),new Vector2(0.6F,0F),new Vector2(0.8F,0F),new Vector2(1F,0F)};
 	private Vector2[] stand = new Vector2[] {new Vector2(0F,0.8F)};
 	private int frame = 0;
+	static public int combo = 0;
 	private string animation;
 	private float animationSpeed = 0.1F;
 	private float animationTime;
@@ -187,6 +188,8 @@ public class PlayerMovement : MonoBehaviour {
 			animation = "landing";
 			frame = 0;
 			grounded = true;
+			//reset the combo when the player hits the ground
+			combo = 0;
 		}
 	}
 	
