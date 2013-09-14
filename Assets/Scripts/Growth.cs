@@ -68,21 +68,27 @@ public class Growth : MonoBehaviour {
 	}
 	
 	void Die() {
-		//if something is hit find a random plant
-		int selectedPlant = Mathf.FloorToInt(Random.value * numPlants);
-		//if it was a sapling, kill it
-		if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0.75F){
-			growthState -= 1;
-			plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(plants[selectedPlant].renderer.material.mainTextureOffset.x, 0.25F);
+		//if there is anything left to kill
+		if(growthState>0){
+			//if something is hit find a random plant
+			int selectedPlant = Mathf.FloorToInt(Random.value * numPlants);
+			//if it was a sapling, kill it
+			if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0.75F){
+				growthState -= 1;
+				plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(plants[selectedPlant].renderer.material.mainTextureOffset.x, 0.25F);
+			}
+			//if it was a fully grown tree, kill it
+			else if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0.5F){
+				growthState -= 2;
+				plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(plants[selectedPlant].renderer.material.mainTextureOffset.x, 0.25F);
+			}
+			//if it wasn't able to die, find something else to kill
+			else{
+				Die ();
+			}
 		}
-		//if it was a fully grown tree, kill it
-		else if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0.5F){
-			growthState -= 2;
-			plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(plants[selectedPlant].renderer.material.mainTextureOffset.x, 0.25F);
-		}
-		//if it wasn't able to die, find something else to kill
 		else{
-			Die ();
+			Debug.Log ("DEATH!!!!!!!!!!!!!");
 		}
 	}
 }
