@@ -4,10 +4,10 @@ using System.Collections;
 public class PlayerMovement : MonoBehaviour {
 	
 	private float moveSpeed = 5;
-	private float jumpSpeed = 500;
+	private float jumpSpeed = 8;
 	public Transform ground;
 	public Transform clouds;
-	private bool grounded = true;
+	static public bool grounded = true;
 	private GameObject sprite;
 	private Vector2[] walk;
 	private Vector2[] walkRight = new Vector2[] {new Vector2(0.2F,0.8F),new Vector2(0.4F,0.8F),new Vector2(0.6F,0.8F),new Vector2(0.8F,0.8F),new Vector2(0F,0.6F),new Vector2(0.2F,0.6F),new Vector2(0.4F,0.6F),new Vector2(0.6F,0.6F)};
@@ -36,24 +36,28 @@ public class PlayerMovement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//animation based on velocity and grounded
-		//if grounded then animate groudned states
+		//if not jumping or landing animate the other states
 		if(animation !="jumping" && animation !="landing"){
 			if(grounded){
+				//if moving then animate walking
 				if(Mathf.Abs (rigidbody.velocity.x) > 4){
 					if(animation !="walking"){
 						frame = 0;
 					}
 					animation = "walking";
 				}
+				//else don't animate
 				else{
+					animation = "standing";
 					sprite.renderer.material.mainTextureOffset = stand[0];
 				}
 			}
+			//if not on the ground animate in air states
 			if(!grounded){
 				animation = "inAir";
 			}
 		}
-		
+		//if moving left, animate using the left facing frames
 		if(rigidbody.velocity.x < -4){
 			walk = walkLeft;
 			jump = jumpLeft;
@@ -61,6 +65,7 @@ public class PlayerMovement : MonoBehaviour {
 			inAir = inAirLeft;
 			sprite.renderer.material.mainTextureScale = new Vector2(-0.2F,0.2F);
 		}
+		//if moving right, animate using the right facing frames
 		else{
 			walk = walkRight;
 			jump = jumpRight;
@@ -68,7 +73,7 @@ public class PlayerMovement : MonoBehaviour {
 			inAir = inAirRight;
 			sprite.renderer.material.mainTextureScale = new Vector2(0.2F,0.2F);
 		}
-		
+		//animate the correct animation
 		switch(animation){
 		case "walking":
 			if (animationTime + animationSpeed < Time.time){
@@ -103,6 +108,7 @@ public class PlayerMovement : MonoBehaviour {
 			}
 			break;
 			
+			//animate in air states based on character velocity
 		case "inAir":
 			if(Mathf.Abs (rigidbody.velocity.y) < 1){
 				sprite.renderer.material.mainTextureOffset = inAir[2];
@@ -121,6 +127,7 @@ public class PlayerMovement : MonoBehaviour {
 			}
 			break;
 			
+			//if confused stand around
 		default:
 			sprite.renderer.material.mainTextureOffset = stand[0];
 			break;
@@ -128,13 +135,17 @@ public class PlayerMovement : MonoBehaviour {
 		
 		//moving left and right
 		
-		//press left move left
+		//press left move right
 		if(Input.GetAxis("Horizontal") > 0){
-			rigidbody.velocity = new Vector3(moveSpeed, rigidbody.velocity.y, 0);
+			MoveRight ();
 		}
-		//press right move right
+		//press right move left
 		else if(Input.GetAxis("Horizontal") < 0){
-			rigidbody.velocity = new Vector3(-moveSpeed, rigidbody.velocity.y, 0);
+			MoveLeft ();
+		}
+		//do nothing here if there are touches on the arrows
+		else if (Input.GetMouseButton(0) || Input.touches.Length > 0){
+			
 		}
 		//if not pressing a direction then don't move
 		else{
@@ -154,29 +165,36 @@ public class PlayerMovement : MonoBehaviour {
 		//press down grow plant?
 	}
 	
+	//move right so that other files can call it
+	void MoveRight () {
+		rigidbody.velocity = new Vector3(moveSpeed, rigidbody.velocity.y, 0);
+	}
+	
+	//move left so that other files can call it
+	void MoveLeft () {
+		rigidbody.velocity = new Vector3(-moveSpeed, rigidbody.velocity.y, 0);
+	}
+	
+	//jump so that other files can call it
 	void Jump () {
 		grounded = false;
 		rigidbody.velocity = new Vector3(rigidbody.velocity.x, jumpSpeed, 0);
 	}
 	
+	//when hitting the ground play the landing animation
 	void OnCollisionEnter (Collision collision) {
 		if(collision.transform == ground){
 			animation = "landing";
 			frame = 0;
 			grounded = true;
 		}
-		if(collision.transform.parent == clouds) {
-			rigidbody.velocity = new Vector3(rigidbody.velocity.x, jumpSpeed, 0);
-		}
 	}
 	
-	
+	//when hitting a cloud, jump and let the cloud know you hit it
 	void OnTriggerEnter (Collider other) {
-		if(other.name == "BasicCloud(Clone)" || other.name == "BasicCloud"){
-			Destroy(other.gameObject);
+		if(other.transform.parent.transform.parent.name == "Clouds"){
+			other.transform.parent.SendMessage("PlayerContact", SendMessageOptions.DontRequireReceiver);
 			Jump ();
-		}
-		else{
 		}
 	}
 }

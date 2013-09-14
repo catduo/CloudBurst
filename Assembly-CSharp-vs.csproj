@@ -46,7 +46,9 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CloudCreator.cs" />
      <Compile Include="Assets\Scripts\Clouds.cs" />
+     <Compile Include="Assets\Scripts\GUIControls.cs" />
      <Compile Include="Assets\Scripts\Growth.cs" />
+     <Compile Include="Assets\Scripts\IndividualGrowth.cs" />
      <Compile Include="Assets\Scripts\PlayerMovement.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

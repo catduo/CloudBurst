@@ -13,65 +13,36 @@ public class CloudCreator : MonoBehaviour {
 	private GameObject createdCloud;
 	private int count = 5;
 	private float timer;
-	private float delayTime = 20;
-	private float cloudSpacing = 10;
+	private float delayTime = 2;
 	
 	// Use this for initialization
 	void Start () {
-		timer = Time.time;
-		for(float zIndex = 0; zIndex < 3; zIndex++){
-			for(float i = 0; i < count; i++){
-				switch(Mathf.FloorToInt(Random.value * count - 4)){
-				case 0:
-					cloud = basicCloud;
-					break;
-				case 1:
-					cloud = darkCloud;
-					break;
-				default:
-					cloud = blackCloud;
-					break;
-				};
-				createdCloud = (GameObject) GameObject.Instantiate(cloud, new Vector3(Random.value * 18F - 9F, Random.value * 5F + 6F, zIndex * cloudSpacing), Quaternion.identity);
-				createdCloud.transform.eulerAngles = new Vector3(270, 0, 0);
-				createdCloud.transform.parent = transform;
-			}
-			count++;
-		}
+		
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		//time the creation of clouds
 		if(Time.time > timer + delayTime){
-			for(int i = 0; i < transform.childCount; i++){
-				if(transform.GetChild(i).position.z > 0) {
-					Transform thisCloud = transform.GetChild(i);
-					thisCloud.position = new Vector3(thisCloud.position.x, thisCloud.position.y, thisCloud.position.z - cloudSpacing);
-				}
-			}
-			for(float i = 0; i < count; i++){
-				switch(Mathf.FloorToInt(Random.value * count)){
-				case 0:
-					cloud = basicCloud;
-					break;
-				case 1:
-					cloud = acidCloud;
-					break;
-				case 3:
-					cloud = iceCloud;
-					break;
-				case 4:
-					cloud = lightningCloud;
-					break;
-				default:
-					cloud = basicCloud;
-					break;
-				};
-				createdCloud = (GameObject) GameObject.Instantiate(cloud, new Vector3(Random.value * 18F - 9F, Random.value * 5F + 6F, 3 * cloudSpacing), Quaternion.identity);
-				createdCloud.transform.eulerAngles = new Vector3(270, 90, 0);
-				createdCloud.transform.parent = transform;
-			}
+			//determine which type of cloud to make
+			switch(Mathf.FloorToInt(Random.value * count - 4)){
+			case 0:
+				cloud = basicCloud;
+				break;
+			case 1:
+				cloud = darkCloud;
+				break;
+			default:
+				cloud = blackCloud;
+				break;
+			};
+			//create the clouds with some randomness around location
+			createdCloud = (GameObject) GameObject.Instantiate(cloud, new Vector3(((Mathf.Floor(Random.value * 2) * 2) -1) * 15, Random.value * 14F - 5F, 5), Quaternion.identity);
+			//set proper rotation and set parent to the clouds transform
+			createdCloud.transform.eulerAngles = new Vector3(270, 0, 0);
+			createdCloud.transform.parent = transform;
 			count++;
+			//reset the timer
 			timer = Time.time;
 		}
 	}
