@@ -27,7 +27,8 @@ public class Clouds : MonoBehaviour {
 		precipitate = GetComponentInChildren<ParticleSystem>();
 		poof = GetComponent<ParticleSystem>();
 		// set a random scale for some variety
-		scale = Random.value * 1.5F + 0.5F;
+		scale = Random.value * 1F + 0.5F;
+		speed *=scale;
 		transform.localScale = new Vector3(scale * transform.localScale.x, transform.localScale.y, scale * transform.localScale.z);
 		image.renderer.material.mainTextureScale = new Vector2(0.5F, 0.25F);
 		switch(transform.name){
@@ -119,6 +120,8 @@ public class Clouds : MonoBehaviour {
 		//acid clouds
 		if(image.renderer.material.mainTextureOffset == new Vector2(0F, 0.75F)){
 			plants.SendMessage("Die");
+			plants.SendMessage("Die");
+			plants.SendMessage("Die");
 			PlayerMovement.combo = 0;
 			precipitate.Play();
 			poof.Play();
@@ -132,6 +135,7 @@ public class Clouds : MonoBehaviour {
 		
 		//ice clouds
 		else if(image.renderer.material.mainTextureOffset == new Vector2(0F, 0.5F)){
+			plants.SendMessage("Die");
 			PlayerMovement.combo = 0;
 			precipitate.Play();
 			poof.Play();

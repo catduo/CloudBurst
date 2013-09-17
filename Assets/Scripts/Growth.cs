@@ -56,10 +56,10 @@ public class Growth : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//if something is on fire it animates and catches other things on fire
-		if(animationDelay == 5){
+		if(animationDelay == 10){
 			for(int selectedPlant = 0; selectedPlant < numPlants; selectedPlant++){
 				if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0F){
-					if(Random.value > 0.95){
+					if(Random.value > 0.97){
 						Fire ();
 					}
 					plants[selectedPlant].renderer.material.mainTextureOffset += new Vector2(0.125F, 0F);
@@ -142,7 +142,7 @@ public class Growth : MonoBehaviour {
 				selectedPlant = Mathf.FloorToInt(Random.value * numPlants);
 			}
 			//if not burning set it on fire
-			if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0.5F && plants[selectedPlant].renderer.material.mainTextureOffset.x < 0.625F){
+			if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0.5F && plants[selectedPlant].renderer.material.mainTextureOffset.x < 0.5F){
 				//if it was a sapling, kill it
 				if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0F){
 					growthState -= 1;
@@ -159,7 +159,13 @@ public class Growth : MonoBehaviour {
 				}
 			}
 			else{
-				Fire ();
+				if(selectedPlant < numPlants-1){
+					selectedPlant++;
+				}
+				else{
+					selectedPlant = 0;
+				}
+				Fire (selectedPlant);
 			}
 		}
 		else{
@@ -171,6 +177,7 @@ public class Growth : MonoBehaviour {
 		for(int selectedPlant = 0; selectedPlant < numPlants; selectedPlant++){
 			if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0F){
 				plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0.375F, 0.5F);
+				break;
 			}
 		}
 	}

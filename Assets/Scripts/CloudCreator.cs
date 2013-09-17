@@ -64,6 +64,9 @@ public class CloudCreator : MonoBehaviour {
 			count++;
 			//reset the timer
 			timer = Time.time;
+			if(delayTime < 4F){
+				delayTime *= 1.05F;
+			}
 		}
 		//time the creation of obstacle clouds
 		if(Time.time > obstacleTimer + obstacleDelayTime){
