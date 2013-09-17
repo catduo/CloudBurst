@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\GUIControls.cs" />
      <Compile Include="Assets\Scripts\Growth.cs" />
      <Compile Include="Assets\Scripts\IndividualGrowth.cs" />
+     <Compile Include="Assets\Scripts\Lightning.cs" />
      <Compile Include="Assets\Scripts\PlayerMovement.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
