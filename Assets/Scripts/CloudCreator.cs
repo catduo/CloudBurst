@@ -3,21 +3,37 @@ using System.Collections;
 
 public class CloudCreator : MonoBehaviour {
 	
-	public GameObject basicCloud;
-	public GameObject darkCloud;
-	public GameObject blackCloud;
-	public GameObject lightningCloud;
-	public GameObject iceCloud;
-	public GameObject acidCloud;
+	public GameObject basicCloud1;
+	public GameObject darkCloud1;
+	public GameObject blackCloud1;
+	public GameObject lightningCloud1;
+	public GameObject iceCloud1;
+	public GameObject acidCloud1;
+	public GameObject basicCloud2;
+	public GameObject darkCloud2;
+	public GameObject blackCloud2;
+	public GameObject lightningCloud2;
+	public GameObject iceCloud2;
+	public GameObject acidCloud2;
+	public GameObject basicCloud3;
+	public GameObject darkCloud3;
+	public GameObject blackCloud3;
+	public GameObject lightningCloud3;
+	public GameObject iceCloud3;
+	public GameObject acidCloud3;
 	private GameObject cloud;
 	private GameObject createdCloud;
-	private int count = 5;
+	private float count = 0;
 	private float timer;
-	private float delayTime = 2;
+	private float delayTime = 2F;
+	private float obstacleCount = 0;
+	private float obstacleTimer;
+	private float obstacleDelayTime = 8F;
 	
 	// Use this for initialization
 	void Start () {
-		
+		obstacleTimer = Time.time;
+		timer = Time.time;
 	}
 	
 	// Update is called once per frame
@@ -25,25 +41,69 @@ public class CloudCreator : MonoBehaviour {
 		//time the creation of clouds
 		if(Time.time > timer + delayTime){
 			//determine which type of cloud to make
-			switch(Mathf.FloorToInt(Random.value * count - 4)){
+			count += Random.value;
+			if(count >= 3){
+				count -= 3;
+			}
+			switch(Mathf.FloorToInt(count)){
 			case 0:
-				cloud = basicCloud;
+				cloud = basicCloud1;
 				break;
 			case 1:
-				cloud = darkCloud;
+				cloud = darkCloud1;
 				break;
 			default:
-				cloud = blackCloud;
+				cloud = blackCloud1;
 				break;
 			};
 			//create the clouds with some randomness around location
-			createdCloud = (GameObject) GameObject.Instantiate(cloud, new Vector3(((Mathf.Floor(Random.value * 2) * 2) -1) * 15, Random.value * 14F - 5F, 5), Quaternion.identity);
+			createdCloud = (GameObject) GameObject.Instantiate(cloud, new Vector3(((Mathf.Floor(Random.value * 2) * 2) -1) * 15, Random.value * Random.value * 14F - 5F, 5), Quaternion.identity);
 			//set proper rotation and set parent to the clouds transform
 			createdCloud.transform.eulerAngles = new Vector3(270, 0, 0);
 			createdCloud.transform.parent = transform;
 			count++;
 			//reset the timer
 			timer = Time.time;
+			if(delayTime < 4F){
+				delayTime *= 1.05F;
+			}
 		}
+		//time the creation of obstacle clouds
+		if(Time.time > obstacleTimer + obstacleDelayTime){
+			//determine which type of cloud to make
+			obstacleCount += Random.value;
+			if(obstacleCount >= 3){
+				obstacleCount -= 3;
+			}
+			switch(Mathf.FloorToInt(obstacleCount)){
+			case 0:
+				cloud = acidCloud1;
+				break;
+			case 1:
+				cloud = lightningCloud1;
+				break;
+			default:
+				cloud = iceCloud1;
+				break;
+			};
+			//create the clouds with some randomness around location
+			createdCloud = (GameObject) GameObject.Instantiate(cloud, new Vector3(((Mathf.Floor(Random.value * 2) * 2) -1) * 15, Random.value * Random.value * 14F - 5F, 5), Quaternion.identity);
+			//set proper rotation and set parent to the clouds transform
+			createdCloud.transform.eulerAngles = new Vector3(270, 0, 0);
+			createdCloud.transform.parent = transform;
+			obstacleCount++;
+			//reset the timer
+			obstacleTimer = Time.time;
+			obstacleDelayTime -= 1/15 * obstacleDelayTime;
+		}
+	}
+	
+	void Reset () {
+		for(int i = 0; i < transform.childCount; i++){
+			Destroy(transform.GetChild(i).gameObject);
+		}
+		count = 5;
+		obstacleCount = 5;
+		Start ();
 	}
 }

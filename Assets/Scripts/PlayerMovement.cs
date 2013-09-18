@@ -169,7 +169,6 @@ public class PlayerMovement : MonoBehaviour {
 		}
 		//if frozen keep the player in place and put up the frozen image
 		else{
-			rigidbody.velocity = new Vector3(0,0,0);
 			sprite.renderer.material.mainTextureOffset = frozen[0];
 			if(Time.time > animationTime + animationSpeed * 20){
 				is_frozen = false;
@@ -179,6 +178,7 @@ public class PlayerMovement : MonoBehaviour {
 	
 	//set frozen and start the timer so that other files can reference
 	void Freeze () {
+		rigidbody.velocity = new Vector3(0,0,0);
 		animationTime = Time.time;
 		is_frozen = true;
 		sprite.renderer.material.mainTextureScale = new Vector2(0.2F,0.2F);
@@ -186,18 +186,24 @@ public class PlayerMovement : MonoBehaviour {
 	
 	//move right so that other files can call it
 	void MoveRight () {
-		rigidbody.velocity = new Vector3(moveSpeed, rigidbody.velocity.y, 0);
+		if(!is_frozen){
+			rigidbody.velocity = new Vector3(moveSpeed, rigidbody.velocity.y, 0);
+		}
 	}
 	
 	//move left so that other files can call it
 	void MoveLeft () {
-		rigidbody.velocity = new Vector3(-moveSpeed, rigidbody.velocity.y, 0);
+		if(!is_frozen){
+			rigidbody.velocity = new Vector3(-moveSpeed, rigidbody.velocity.y, 0);
+		}
 	}
 	
 	//jump so that other files can call it
 	void Jump () {
-		grounded = false;
-		rigidbody.velocity = new Vector3(rigidbody.velocity.x, jumpSpeed, 0);
+		if(!is_frozen){
+			grounded = false;
+			rigidbody.velocity = new Vector3(rigidbody.velocity.x, jumpSpeed, 0);
+		}
 	}
 	
 	//when hitting the ground play the landing animation
@@ -215,7 +221,6 @@ public class PlayerMovement : MonoBehaviour {
 	void OnTriggerEnter (Collider other) {
 		if(other.transform.parent.transform.parent.name == "Clouds"){
 			other.transform.parent.SendMessage("PlayerContact", SendMessageOptions.DontRequireReceiver);
-			Jump ();
 		}
 	}
 }

@@ -6,16 +6,39 @@ public class GUIControls : MonoBehaviour {
 	private GameObject leftButton;
 	private GameObject pauseButton;
 	private GameObject rightButton;
+	private GameObject muteButton;
+	private GameObject mainCamera;
 	private GameObject scoreText;
 	private GameObject comboText;
 	public GameObject player;
 	static public int score;
+	private bool paused;
+	private bool muted;
+	public Rect windowRect = new Rect(20, 20, 120, 90);
+	private int topScore;
+	private bool gameOver = false;
+	static public bool ftue;
+	private int ftueLocation = 0;
+	private string[] ftueTitle = new string[] {"Cloud Burst: How to Play", "Movement", "Jumping", "Bursting Clouds", "Bad Clouds"};
+	private string[] ftueText = new string[] {"You are a forest spirit gathering water from clouds by touching them to make them burst.", "To move, use the arrows in the bottom right corner of the screen, or use the arrow keys.", "To jump, tap either of the arrow buttons, or press the up key.", "The white clouds will make rain.  Change darker clouds into light clouds by touching them.", "The colorful clouds will make it harder for you to burst clouds and will destroy your forest."};
+	private string[] ftueButton = new string[] {"Next","Next","Next","Next","Start"};
 
 	// Use this for initialization
 	void Start () {
+		PlayerPrefs.DeleteAll();
+		if(PlayerPrefs.GetInt("FTUE") != 1){
+			ftue = true;
+			Time.timeScale = 0;
+		}
+		else{
+			ftue = false;
+		}
+		topScore = PlayerPrefs.GetInt("TopScore");
+		mainCamera = GameObject.Find("MainCamera");
 		leftButton = GameObject.Find("LeftButton");
 		rightButton = GameObject.Find("RightButton");
 		pauseButton = GameObject.Find("PauseButton");
+		muteButton = GameObject.Find("MuteButton");
 		scoreText = GameObject.Find("Score");
 		comboText = GameObject.Find("ComboText");
 	}
@@ -84,9 +107,28 @@ public class GUIControls : MonoBehaviour {
 	void RightButton () {
 		player.SendMessage("MoveRight");
 	}
-	//when paus is hit pause the game and open the menu, when hit again take down the menu
+	//when pause is hit pause the game and open the menu, when hit again take down the menu
 	void PauseButtonTap () {
-		Debug.Log ("Pause");
+		if(paused){
+			Time.timeScale = 1;
+			paused = false;
+		}
+		else{
+			paused = true;
+			Time.timeScale = 0;
+		}
+	}
+	//when mute is hit change the location of the camera to be too far away to hear the music, else move it back.
+	void MuteButtonTap () {
+		if(muted){
+			mainCamera.transform.position += new Vector3(0, 0, 100F);
+			muted = false;
+		}
+		else{
+			mainCamera.transform.position += new Vector3(0, 0, -100F);
+			muted = true;
+			Time.timeScale = 0;
+		}
 	}
 	//update the score text
 	void UpdateScore () {
@@ -99,5 +141,59 @@ public class GUIControls : MonoBehaviour {
 		comboText.GetComponent<TextMesh>().color = new Color(comboText.GetComponent<TextMesh>().color.r, comboText.GetComponent<TextMesh>().color.g, comboText.GetComponent<TextMesh>().color.b, 1F);
 		comboText.GetComponent<TextMesh>().fontSize = 15 + PlayerMovement.combo;
 		comboText.GetComponent<TextMesh>().text = "x" + PlayerMovement.combo.ToString();
+	}
+	
+	//when the game ends put up a menu that lets you restart
+	void GameOver(){
+		ftue = false;
+		gameOver = true;
+		Time.timeScale = 0;
+		if(topScore < 10){
+			topScore = score;
+		}
+		else if(score > topScore){
+			topScore = score;
+		}
+		PlayerPrefs.SetInt("TopScore", topScore);
+	}
+	
+	void Restart () {
+		Time.timeScale = 1;
+		score = 0;
+		GameObject.Find ("Plants").SendMessage("Start");
+		GameObject.Find ("Clouds").SendMessage("Reset");
+		gameOver = false;
+	}
+	
+	void OnGUI () {
+        GUI.skin.button.wordWrap = true;
+		if(gameOver){
+        	windowRect = GUI.Window(0, new Rect(20, 20, 140, 90), DoMyWindow, "GameOver");
+		}
+		if(ftue){
+        	windowRect = GUI.Window(0, new Rect(20, 20, 300, 100), FTUEWindow, ftueTitle[ftueLocation]);
+		}
+    }
+    void DoMyWindow(int windowID) {
+		GUI.TextField(new Rect(10, 20, 120, 20), "This Score: " + score.ToString());
+		GUI.TextField(new Rect(10, 40, 120, 20), "Your Best: " + topScore.ToString());
+        if (GUI.Button(new Rect(10, 60, 120, 20), "Play Again")){
+            Restart ();
+		}
+	}
+    void FTUEWindow(int windowID) {
+		GUI.TextArea(new Rect(10, 20, 280, 50), ftueText[ftueLocation]);
+        if (GUI.Button(new Rect(10, 70, 280, 20), ftueButton[ftueLocation])){
+			if(ftueLocation < ftueButton.Length - 1){
+			ftueLocation++;
+			}
+			else{
+				ftue = false;
+				PlayerPrefs.SetInt("FTUE",1);
+				Time.timeScale = 1;
+				player.SendMessage("Jump");
+				GameObject.Find ("Plants").SendMessage("Start");
+			}
+		}
 	}
 }
