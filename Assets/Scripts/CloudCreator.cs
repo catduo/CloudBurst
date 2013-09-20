@@ -25,10 +25,10 @@ public class CloudCreator : MonoBehaviour {
 	private GameObject createdCloud;
 	private float count = 0;
 	private float timer;
-	private float delayTime = 2F;
+	private float delayTime = 1.5F;
 	private float obstacleCount = 0;
 	private float obstacleTimer;
-	private float obstacleDelayTime = 8F;
+	private float obstacleDelayTime = 3F;
 	
 	// Use this for initialization
 	void Start () {
@@ -57,16 +57,13 @@ public class CloudCreator : MonoBehaviour {
 				break;
 			};
 			//create the clouds with some randomness around location
-			createdCloud = (GameObject) GameObject.Instantiate(cloud, new Vector3(((Mathf.Floor(Random.value * 2) * 2) -1) * 15, Random.value * Random.value * 14F - 5F, 5), Quaternion.identity);
+			createdCloud = (GameObject) GameObject.Instantiate(cloud, new Vector3(((Mathf.Floor(Random.value * 2) * 2) -1) * 15, Random.value * Random.value * 15F - 5F, 5), Quaternion.identity);
 			//set proper rotation and set parent to the clouds transform
 			createdCloud.transform.eulerAngles = new Vector3(270, 0, 0);
 			createdCloud.transform.parent = transform;
 			count++;
 			//reset the timer
 			timer = Time.time;
-			if(delayTime < 4F){
-				delayTime *= 1.05F;
-			}
 		}
 		//time the creation of obstacle clouds
 		if(Time.time > obstacleTimer + obstacleDelayTime){
@@ -87,7 +84,7 @@ public class CloudCreator : MonoBehaviour {
 				break;
 			};
 			//create the clouds with some randomness around location
-			createdCloud = (GameObject) GameObject.Instantiate(cloud, new Vector3(((Mathf.Floor(Random.value * 2) * 2) -1) * 15, Random.value * Random.value * 14F - 5F, 5), Quaternion.identity);
+			createdCloud = (GameObject) GameObject.Instantiate(cloud, new Vector3(((Mathf.Floor(Random.value * 2) * 2) -1) * 15, Mathf.Sqrt(Random.value) * 15F - 5F, 5), Quaternion.identity);
 			//set proper rotation and set parent to the clouds transform
 			createdCloud.transform.eulerAngles = new Vector3(270, 0, 0);
 			createdCloud.transform.parent = transform;

@@ -41,6 +41,8 @@ public class GUIControls : MonoBehaviour {
 		muteButton = GameObject.Find("MuteButton");
 		scoreText = GameObject.Find("Score");
 		comboText = GameObject.Find("ComboText");
+		pauseButton.renderer.material.mainTextureOffset = new Vector2(0, 0.5F);
+		muteButton.renderer.material.mainTextureOffset = new Vector2(0.25F, 0.5F);
 	}
 	
 	// Update is called once per frame
@@ -102,20 +104,26 @@ public class GUIControls : MonoBehaviour {
 	//when left is held the character goes left
 	void LeftButton () {
 		player.SendMessage("MoveLeft");
+		leftButton.renderer.material.mainTextureOffset = new Vector2(leftButton.renderer.material.mainTextureOffset.x, 0);
+		rightButton.renderer.material.mainTextureOffset = new Vector2(rightButton.renderer.material.mainTextureOffset.x, 0.5F);
 	}
 	//when right is held the character goes right
 	void RightButton () {
 		player.SendMessage("MoveRight");
+		rightButton.renderer.material.mainTextureOffset = new Vector2(rightButton.renderer.material.mainTextureOffset.x, 0);
+		leftButton.renderer.material.mainTextureOffset = new Vector2(leftButton.renderer.material.mainTextureOffset.x, 0.5F);
 	}
 	//when pause is hit pause the game and open the menu, when hit again take down the menu
 	void PauseButtonTap () {
 		if(paused){
 			Time.timeScale = 1;
 			paused = false;
+			pauseButton.renderer.material.mainTextureOffset = new Vector2(pauseButton.renderer.material.mainTextureOffset.x, 0.5F);
 		}
 		else{
 			paused = true;
 			Time.timeScale = 0;
+			pauseButton.renderer.material.mainTextureOffset = new Vector2(pauseButton.renderer.material.mainTextureOffset.x, 0);
 		}
 	}
 	//when mute is hit change the location of the camera to be too far away to hear the music, else move it back.
@@ -123,16 +131,17 @@ public class GUIControls : MonoBehaviour {
 		if(muted){
 			mainCamera.transform.position += new Vector3(0, 0, 100F);
 			muted = false;
+			muteButton.renderer.material.mainTextureOffset = new Vector2(muteButton.renderer.material.mainTextureOffset.x, 0.5F);
 		}
 		else{
 			mainCamera.transform.position += new Vector3(0, 0, -100F);
 			muted = true;
-			Time.timeScale = 0;
+			muteButton.renderer.material.mainTextureOffset = new Vector2(muteButton.renderer.material.mainTextureOffset.x, 0);
 		}
 	}
 	//update the score text
 	void UpdateScore () {
-		scoreText.guiText.text = "Score: " + score.ToString();
+		scoreText.GetComponent<TextMesh>().text = "Score: " + score.ToString();
 	}
 	
 	//when a combo happens display the combo count

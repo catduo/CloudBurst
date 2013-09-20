@@ -10,7 +10,12 @@ public class IndividualGrowth : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		//when starting out give the plant a somewhat randome end scale
-		endScale = Random.value * 0.4F + 0.4F;
+		if(transform.position.z == 10){
+			endScale = Random.value * 0.2F + 0.2F;
+		}
+		else{
+			endScale = Random.value * 0.4F + 0.4F;
+		}
 	}
 	
 	// Update is called once per frame
@@ -24,13 +29,23 @@ public class IndividualGrowth : MonoBehaviour {
 	
 	//when getting the seedling growth state start growing
 	void SeedlingGrowth () {
-		transform.localScale = new Vector3(startScale / 3.5F, 1, startScale);
-		transform.localPosition = new Vector3(transform.localPosition.x,-6.7F,transform.localPosition.z);
+		if(transform.position.z == 10){
+			transform.localScale = new Vector3(startScale / 2F, 1, startScale);
+		}
+		else{
+			transform.localScale = new Vector3(startScale / 3.5F, 1, startScale);
+		}
+		transform.localPosition = new Vector3(transform.localPosition.x,-6.8F,transform.localPosition.z);
 	}
 	
 	//when getting the full growth state start growing
 	void FullGrowth () {
-		transform.localScale = new Vector3(startScale / 3.5F, 1, startScale);
-		transform.localPosition = new Vector3(transform.localPosition.x,-6.7F,transform.localPosition.z);
+		if(transform.position.z == 10){
+			transform.localScale = new Vector3(startScale / 2F, 1, startScale);
+		}
+		else{
+			transform.localScale = new Vector3(startScale / 3.5F, 1, startScale);
+		}
+		transform.localPosition = new Vector3(transform.localPosition.x,-6.8F,transform.localPosition.z);
 	}
 }

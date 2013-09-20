@@ -13,10 +13,12 @@ public class Growth : MonoBehaviour {
 	public Material bush1;
 	public Material bush2;
 	private int animationDelay;
+	private bool onFire;
 	
 	// Use this for initialization
 	void Start () {
 		//set the lightning sparks and fire objects
+		onFire = false;
 		sparks = GameObject.Find ("Sparks");
 		//setup the plants so that you have all of them in one big array.
 		plants = new Transform[numPlants];
@@ -56,16 +58,22 @@ public class Growth : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//if something is on fire it animates and catches other things on fire
-		if(animationDelay == 10){
+		if(animationDelay == 5){
 			for(int selectedPlant = 0; selectedPlant < numPlants; selectedPlant++){
 				if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0F){
-					if(Random.value > 0.97){
-						Fire ();
+					onFire = true;
+					if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0.875F){
+						plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0F, 0F);
 					}
-					plants[selectedPlant].renderer.material.mainTextureOffset += new Vector2(0.125F, 0F);
+					else{
+						plants[selectedPlant].renderer.material.mainTextureOffset += new Vector2(0.125F, 0F);
+					}
 				}
 			}
 			animationDelay = 0;
+			if(Random.value > 0.95  && onFire){
+				Fire ();
+			}
 		}
 		
 		// if the total growth of plants is 0 the player loses
@@ -102,27 +110,23 @@ public class Growth : MonoBehaviour {
 	void Die() {
 		//if there is anything left to kill
 		if(growthState>0){
-			//if something is hit find a random plant
-			int selectedPlant = Mathf.FloorToInt(Random.value * numPlants);
-			//if burning it is already dead so don't kill it again
-			if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0.5F){
-				//if it was a sapling, kill it
-				if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0F){
-					growthState -= 1;
-					plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0.25F, 0.5F);
+			//if something is hit start going through the plants
+			for(int selectedPlant = 0; selectedPlant < numPlants; selectedPlant ++){
+				//if burning it is already dead so don't kill it again
+				if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0.5F){
+					//if it was a sapling, kill it
+					if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0F){
+						growthState -= 1;
+						plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0.25F, 0.5F);
+						break;
+					}
+					//if it was a fully grown tree, kill it
+					else if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0.125F){
+						growthState -= 2;
+						plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0.25F, 0.5F);
+						break;
+					}
 				}
-				//if it was a fully grown tree, kill it
-				else if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0.125F){
-					growthState -= 2;
-					plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0.25F, 0.5F);
-				}
-				//if it wasn't able to die, find something else to kill
-				else{
-					Die ();
-				}
-			}
-			else{
-				Die ();
 			}
 		}
 		else{
@@ -135,11 +139,12 @@ public class Growth : MonoBehaviour {
 	}
 	
 	void Fire (int selectedPlant) {
+		onFire = true;
 		//if there is anything left to kill
 		if(growthState>0){
 			//if something is hit find a random plant
 			if(selectedPlant == -1){
-				selectedPlant = Mathf.FloorToInt(Random.value * numPlants);
+				selectedPlant = 0;
 			}
 			//if not burning set it on fire
 			if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0.5F && plants[selectedPlant].renderer.material.mainTextureOffset.x < 0.5F){
@@ -153,7 +158,7 @@ public class Growth : MonoBehaviour {
 					growthState -= 2;
 					plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0.25F, 0F);
 				}
-				//if it wasn't able to die, find something else to kill
+				//dead trees can catch on fire
 				else{
 					plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0.25F, 0F);
 				}
@@ -161,11 +166,8 @@ public class Growth : MonoBehaviour {
 			else{
 				if(selectedPlant < numPlants-1){
 					selectedPlant++;
+					Fire (selectedPlant);
 				}
-				else{
-					selectedPlant = 0;
-				}
-				Fire (selectedPlant);
 			}
 		}
 		else{
@@ -174,6 +176,7 @@ public class Growth : MonoBehaviour {
 	}
 	
 	void QuenchFire () {
+		onFire = false;
 		for(int selectedPlant = 0; selectedPlant < numPlants; selectedPlant++){
 			if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0F){
 				plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0.375F, 0.5F);
@@ -185,30 +188,26 @@ public class Growth : MonoBehaviour {
 	void Lightning () {
 		//if there is anything left to kill
 		if(growthState>0){
-			//if something is hit find a random plant
-			int selectedPlant = Mathf.FloorToInt(Random.value * numPlants);
-			if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0.5F && plants[selectedPlant].renderer.material.mainTextureOffset.x < 0.625F){
-				//if it was a sapling, kill it
-				if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0F){
-					sparks.transform.position = plants[selectedPlant].transform.position;
-					sparks.GetComponent<ParticleSystem>().Play();
-					growthState -= 1;
-					Fire (selectedPlant);
+			// go through plants until you find one to kill
+			for(int selectedPlant = 0; selectedPlant < numPlants; selectedPlant ++){
+				if(plants[selectedPlant].renderer.material.mainTextureOffset.y == 0.5F && plants[selectedPlant].renderer.material.mainTextureOffset.x < 0.625F){
+					//if it was a sapling, kill it
+					if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0F){
+						sparks.transform.position = plants[selectedPlant].transform.position;
+						sparks.GetComponent<ParticleSystem>().Play();
+						growthState -= 1;
+						Fire (selectedPlant);
+						break;
+					}
+					//if it was a fully grown tree, kill it
+					else if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0.125F){
+						sparks.transform.position = plants[selectedPlant].transform.position;
+						sparks.GetComponent<ParticleSystem>().Play();
+						growthState -= 2;
+						Fire (selectedPlant);
+						break;
+					}
 				}
-				//if it was a fully grown tree, kill it
-				else if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0.125F){
-					sparks.transform.position = plants[selectedPlant].transform.position;
-					sparks.GetComponent<ParticleSystem>().Play();
-					growthState -= 2;
-					Fire (selectedPlant);
-				}
-				//if it wasn't able to die, find something else to kill
-				else{
-					Lightning ();
-				}
-			}
-			else{
-				Lightning ();
 			}
 		}
 		else{
@@ -217,6 +216,7 @@ public class Growth : MonoBehaviour {
 	}
 	
 	void Lose () {
+		onFire = false;
 		GameObject.Find("GUI").SendMessage("GameOver");
 	}
 }

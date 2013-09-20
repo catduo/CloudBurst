@@ -29,15 +29,28 @@ public class PlayerMovement : MonoBehaviour {
 	private string animation;
 	private float animationSpeed = 0.1F;
 	private float animationTime;
+	private GameObject camera;
+	private GameObject guiInterface;
 	
 	// Use this for initialization
 	void Start () {
+		camera = GameObject.Find ("MainCamera");
+		guiInterface = GameObject.Find ("GUI");
 		animationTime = Time.time;
 		sprite = GameObject.Find("Sprite");
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		//follow the sprite up as it climbs
+		if(transform.position.y > 2){
+			camera.transform.position = new Vector3(0, transform.position.y -2, -30);
+			guiInterface.transform.position = new Vector3(0, transform.position.y -2, 0);
+		}
+		else{
+			camera.transform.position = new Vector3(0, 0, -30);
+			guiInterface.transform.position = new Vector3(0, 0, 0);
+		}
 		//only do movement if not frozen (from ice clouds)
 		if(!is_frozen){
 			//animation based on velocity and grounded

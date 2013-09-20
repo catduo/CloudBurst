@@ -4,13 +4,15 @@ using System.Collections;
 public class Clouds : MonoBehaviour {
 	
 	private float scale;
-	private float speed = 1F;
+	private float speed = 1.3F;
 	private ParticleSystem precipitate;
 	private ParticleSystem poof;
 	private Transform player;
 	private GameObject plants;
 	private GameObject guiControls;
 	private GameObject image;
+	private float hitTimer = 0.5F;
+	private float hitTime = 0F;
 	
 	// Use this for initialization
 	void Start () {
@@ -117,82 +119,87 @@ public class Clouds : MonoBehaviour {
 	}
 	
 	void PlayerContact () {
-		//acid clouds
-		if(image.renderer.material.mainTextureOffset == new Vector2(0F, 0.75F)){
-			plants.SendMessage("Die");
-			plants.SendMessage("Die");
-			plants.SendMessage("Die");
-			PlayerMovement.combo = 0;
-			precipitate.Play();
-			poof.Play();
-			Destroy(transform.GetChild(0).gameObject);
-			Destroy(transform.GetChild(1).gameObject);
-			Destroy(transform.GetChild(3).gameObject);
-			Destroy(transform.GetChild(4).gameObject);
-			Destroy(transform.GetChild(5).gameObject);
-			player.SendMessage("Jump");
-		}
-		
-		//ice clouds
-		else if(image.renderer.material.mainTextureOffset == new Vector2(0F, 0.5F)){
-			plants.SendMessage("Die");
-			PlayerMovement.combo = 0;
-			precipitate.Play();
-			poof.Play();
-			Destroy(transform.GetChild(0).gameObject);
-			Destroy(transform.GetChild(1).gameObject);
-			Destroy(transform.GetChild(3).gameObject);
-			Destroy(transform.GetChild(4).gameObject);
-			Destroy(transform.GetChild(5).gameObject);
-			player.SendMessage("Freeze");
-		}
-		
-		//lightning clouds
-		else if(image.renderer.material.mainTextureOffset == new Vector2(0F, 0.25F)){
-			PlayerMovement.combo = 0;
-			GameObject flash = GameObject.Find ("LightningFlash");
-			flash.SendMessage("Flash");
-			GameObject plants = GameObject.Find ("Plants");
-			plants.SendMessage("Lightning");
-			poof.Play();
-			Destroy(transform.GetChild(0).gameObject);
-			Destroy(transform.GetChild(1).gameObject);
-			Destroy(transform.GetChild(3).gameObject);
-			Destroy(transform.GetChild(4).gameObject);
-			Destroy(transform.GetChild(5).gameObject);
-			player.SendMessage("Jump");
-		}
-		
-		//black clouds when hit turn to dark clouds
-		else if(image.renderer.material.mainTextureOffset == new Vector2(0.5F, 0.25F)){
-			image.renderer.material.mainTextureOffset = new Vector2(0.5F, 0.5F);
-			player.SendMessage("Jump");
-		}
-		
-		//dark clouds when hit turn to basic clouds
-		else if(image.renderer.material.mainTextureOffset == new Vector2(0.5F, 0.5F)){
-			image.renderer.material.mainTextureOffset = new Vector2(0.5F, 0.75F);
-			player.SendMessage("Jump");
-		}
-		
-		//when hit for the last time the cloud tells the plants to grow, gives score, animates the particle effects, and destroys the image and colliders.
-		else{
-			plants.SendMessage("Grow");
-			player.SendMessage("Jump");
-			PlayerMovement.combo++;
-			if(PlayerMovement.combo > 0){
-				guiControls.gameObject.SendMessage("Combo");
+		//don't let the player pop it with multiple quick hits, full bounces are required
+		if(hitTime+hitTimer < Time.time){
+			hitTime = Time.time;
+			//acid clouds
+			if(image.renderer.material.mainTextureOffset == new Vector2(0F, 0.75F)){
+				plants.SendMessage("Die");
+				plants.SendMessage("Die");
+				plants.SendMessage("Die");
+				plants.SendMessage("Die");
+				PlayerMovement.combo = 0;
+				precipitate.Play();
+				poof.Play();
+				Destroy(transform.GetChild(0).gameObject);
+				Destroy(transform.GetChild(1).gameObject);
+				Destroy(transform.GetChild(3).gameObject);
+				Destroy(transform.GetChild(4).gameObject);
+				Destroy(transform.GetChild(5).gameObject);
+				player.SendMessage("Jump");
 			}
-			GUIControls.score += 10 * PlayerMovement.combo;
-			guiControls.gameObject.SendMessage("UpdateScore");
-			precipitate.Play();
-			poof.Play();
-			plants.SendMessage("QuenchFire");
-			Destroy(transform.GetChild(0).gameObject);
-			Destroy(transform.GetChild(1).gameObject);
-			Destroy(transform.GetChild(3).gameObject);
-			Destroy(transform.GetChild(4).gameObject);
-			Destroy(transform.GetChild(5).gameObject);
+			
+			//ice clouds
+			else if(image.renderer.material.mainTextureOffset == new Vector2(0F, 0.5F)){
+				plants.SendMessage("Die");
+				PlayerMovement.combo = 0;
+				precipitate.Play();
+				poof.Play();
+				Destroy(transform.GetChild(0).gameObject);
+				Destroy(transform.GetChild(1).gameObject);
+				Destroy(transform.GetChild(3).gameObject);
+				Destroy(transform.GetChild(4).gameObject);
+				Destroy(transform.GetChild(5).gameObject);
+				player.SendMessage("Freeze");
+			}
+			
+			//lightning clouds
+			else if(image.renderer.material.mainTextureOffset == new Vector2(0F, 0.25F)){
+				PlayerMovement.combo = 0;
+				GameObject flash = GameObject.Find ("LightningFlash");
+				flash.SendMessage("Flash");
+				GameObject plants = GameObject.Find ("Plants");
+				plants.SendMessage("Lightning");
+				poof.Play();
+				Destroy(transform.GetChild(0).gameObject);
+				Destroy(transform.GetChild(1).gameObject);
+				Destroy(transform.GetChild(3).gameObject);
+				Destroy(transform.GetChild(4).gameObject);
+				Destroy(transform.GetChild(5).gameObject);
+				player.SendMessage("Jump");
+			}
+			
+			//black clouds when hit turn to dark clouds
+			else if(image.renderer.material.mainTextureOffset == new Vector2(0.5F, 0.25F)){
+				image.renderer.material.mainTextureOffset = new Vector2(0.5F, 0.5F);
+				player.SendMessage("Jump");
+			}
+			
+			//dark clouds when hit turn to basic clouds
+			else if(image.renderer.material.mainTextureOffset == new Vector2(0.5F, 0.5F)){
+				image.renderer.material.mainTextureOffset = new Vector2(0.5F, 0.75F);
+				player.SendMessage("Jump");
+			}
+			
+			//when hit for the last time the cloud tells the plants to grow, gives score, animates the particle effects, and destroys the image and colliders.
+			else{
+				plants.SendMessage("Grow");
+				player.SendMessage("Jump");
+				PlayerMovement.combo++;
+				if(PlayerMovement.combo > 0){
+					guiControls.gameObject.SendMessage("Combo");
+				}
+				GUIControls.score += 10 * PlayerMovement.combo;
+				guiControls.gameObject.SendMessage("UpdateScore");
+				precipitate.Play();
+				poof.Play();
+				plants.SendMessage("QuenchFire");
+				Destroy(transform.GetChild(0).gameObject);
+				Destroy(transform.GetChild(1).gameObject);
+				Destroy(transform.GetChild(3).gameObject);
+				Destroy(transform.GetChild(4).gameObject);
+				Destroy(transform.GetChild(5).gameObject);
+			}
 		}
 	}
 }
