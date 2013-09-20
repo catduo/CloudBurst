@@ -10,39 +10,41 @@ public class GUIControls : MonoBehaviour {
 	private GameObject mainCamera;
 	private GameObject scoreText;
 	private GameObject comboText;
+	private GameObject scoreScreen;
+	private GameObject FTUE;
 	public GameObject player;
 	static public int score;
 	private bool paused;
 	private bool muted;
-	public Rect windowRect = new Rect(20, 20, 120, 90);
 	private int topScore;
 	private bool gameOver = false;
 	static public bool ftue;
-	private int ftueLocation = 0;
-	private string[] ftueTitle = new string[] {"Cloud Burst: How to Play", "Movement", "Jumping", "Bursting Clouds", "Bad Clouds"};
-	private string[] ftueText = new string[] {"You are a forest spirit gathering water from clouds by touching them to make them burst.", "To move, use the arrows in the bottom right corner of the screen, or use the arrow keys.", "To jump, tap either of the arrow buttons, or press the up key.", "The white clouds will make rain.  Change darker clouds into light clouds by touching them.", "The colorful clouds will make it harder for you to burst clouds and will destroy your forest."};
-	private string[] ftueButton = new string[] {"Next","Next","Next","Next","Start"};
+	private int ftueLocation = -1;
 
 	// Use this for initialization
 	void Start () {
 		PlayerPrefs.DeleteAll();
 		if(PlayerPrefs.GetInt("FTUE") != 1){
 			ftue = true;
-			Time.timeScale = 0;
+			Time.timeScale = 1;
 		}
 		else{
 			ftue = false;
 		}
 		topScore = PlayerPrefs.GetInt("TopScore");
 		mainCamera = GameObject.Find("MainCamera");
+		FTUE = GameObject.Find("FTUE");
 		leftButton = GameObject.Find("LeftButton");
 		rightButton = GameObject.Find("RightButton");
 		pauseButton = GameObject.Find("PauseButton");
 		muteButton = GameObject.Find("MuteButton");
+		scoreScreen = GameObject.Find("ScoreScreen");
 		scoreText = GameObject.Find("Score");
 		comboText = GameObject.Find("ComboText");
 		pauseButton.renderer.material.mainTextureOffset = new Vector2(0, 0.5F);
 		muteButton.renderer.material.mainTextureOffset = new Vector2(0.25F, 0.5F);
+		rightButton.renderer.material.mainTextureOffset = new Vector2(0.75F, 0.5F);
+		FTUETap ();
 	}
 	
 	// Update is called once per frame
@@ -104,14 +106,10 @@ public class GUIControls : MonoBehaviour {
 	//when left is held the character goes left
 	void LeftButton () {
 		player.SendMessage("MoveLeft");
-		leftButton.renderer.material.mainTextureOffset = new Vector2(leftButton.renderer.material.mainTextureOffset.x, 0);
-		rightButton.renderer.material.mainTextureOffset = new Vector2(rightButton.renderer.material.mainTextureOffset.x, 0.5F);
 	}
 	//when right is held the character goes right
 	void RightButton () {
 		player.SendMessage("MoveRight");
-		rightButton.renderer.material.mainTextureOffset = new Vector2(rightButton.renderer.material.mainTextureOffset.x, 0);
-		leftButton.renderer.material.mainTextureOffset = new Vector2(leftButton.renderer.material.mainTextureOffset.x, 0.5F);
 	}
 	//when pause is hit pause the game and open the menu, when hit again take down the menu
 	void PauseButtonTap () {
@@ -129,12 +127,12 @@ public class GUIControls : MonoBehaviour {
 	//when mute is hit change the location of the camera to be too far away to hear the music, else move it back.
 	void MuteButtonTap () {
 		if(muted){
-			mainCamera.transform.position += new Vector3(0, 0, 100F);
+			mainCamera.GetComponent<AudioListener>().enabled = true;
 			muted = false;
 			muteButton.renderer.material.mainTextureOffset = new Vector2(muteButton.renderer.material.mainTextureOffset.x, 0.5F);
 		}
 		else{
-			mainCamera.transform.position += new Vector3(0, 0, -100F);
+			mainCamera.GetComponent<AudioListener>().enabled = false;
 			muted = true;
 			muteButton.renderer.material.mainTextureOffset = new Vector2(muteButton.renderer.material.mainTextureOffset.x, 0);
 		}
@@ -155,18 +153,24 @@ public class GUIControls : MonoBehaviour {
 	//when the game ends put up a menu that lets you restart
 	void GameOver(){
 		ftue = false;
-		gameOver = true;
 		Time.timeScale = 0;
-		if(topScore < 10){
-			topScore = score;
+		if(gameOver == false){
+			if(topScore < 10){
+				topScore = score;
+			}
+			else if(score > topScore){
+				topScore = score;
+			}
+			PlayerPrefs.SetInt("TopScore", topScore);
+			GameObject.Find ("HighScore").GetComponent<TextMesh>().text = "High Score: " + topScore.ToString();
+			GameObject.Find ("ThisScore").GetComponent<TextMesh>().text = "This Round: " + score.ToString();
+			scoreScreen.transform.position -= new Vector3(100,0,0);
+			gameOver = true;
 		}
-		else if(score > topScore){
-			topScore = score;
-		}
-		PlayerPrefs.SetInt("TopScore", topScore);
 	}
 	
-	void Restart () {
+	void ScoreScreenTap () {
+		scoreScreen.transform.position += new Vector3(100,0,0);
 		Time.timeScale = 1;
 		score = 0;
 		GameObject.Find ("Plants").SendMessage("Start");
@@ -174,34 +178,24 @@ public class GUIControls : MonoBehaviour {
 		gameOver = false;
 	}
 	
-	void OnGUI () {
-        GUI.skin.button.wordWrap = true;
-		if(gameOver){
-        	windowRect = GUI.Window(0, new Rect(20, 20, 140, 90), DoMyWindow, "GameOver");
+	void FTUETap () {
+		if(PlayerPrefs.GetInt("FTUE") == 1){
+			Destroy (FTUE);
 		}
-		if(ftue){
-        	windowRect = GUI.Window(0, new Rect(20, 20, 300, 100), FTUEWindow, ftueTitle[ftueLocation]);
+		ftueLocation++;
+		if(ftueLocation > 6){
+			Destroy (FTUE);
+			Time.timeScale = 1;
+			PlayerPrefs.SetInt("FTUE",1);
 		}
-    }
-    void DoMyWindow(int windowID) {
-		GUI.TextField(new Rect(10, 20, 120, 20), "This Score: " + score.ToString());
-		GUI.TextField(new Rect(10, 40, 120, 20), "Your Best: " + topScore.ToString());
-        if (GUI.Button(new Rect(10, 60, 120, 20), "Play Again")){
-            Restart ();
-		}
-	}
-    void FTUEWindow(int windowID) {
-		GUI.TextArea(new Rect(10, 20, 280, 50), ftueText[ftueLocation]);
-        if (GUI.Button(new Rect(10, 70, 280, 20), ftueButton[ftueLocation])){
-			if(ftueLocation < ftueButton.Length - 1){
-			ftueLocation++;
-			}
-			else{
-				ftue = false;
-				PlayerPrefs.SetInt("FTUE",1);
-				Time.timeScale = 1;
-				player.SendMessage("Jump");
-				GameObject.Find ("Plants").SendMessage("Start");
+		else{
+			for(int i = 0; i < 7; i++){
+				if(i == ftueLocation){
+					FTUE.transform.GetChild(i).renderer.enabled = true;
+				}
+				else{
+					FTUE.transform.GetChild(i).renderer.enabled = false;
+				}
 			}
 		}
 	}

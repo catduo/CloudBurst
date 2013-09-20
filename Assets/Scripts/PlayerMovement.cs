@@ -6,6 +6,8 @@ public class PlayerMovement : MonoBehaviour {
 	private float moveSpeed = 5;
 	private float jumpSpeed = 8;
 	public Transform ground;
+	private GameObject rightButton;
+	private GameObject leftButton;
 	public Transform clouds;
 	private bool is_frozen = false;
 	static public bool grounded = true;
@@ -35,6 +37,8 @@ public class PlayerMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		camera = GameObject.Find ("MainCamera");
+		leftButton = GameObject.Find ("LeftButton");
+		rightButton = GameObject.Find ("RightButton");
 		guiInterface = GameObject.Find ("GUI");
 		animationTime = Time.time;
 		sprite = GameObject.Find("Sprite");
@@ -90,6 +94,10 @@ public class PlayerMovement : MonoBehaviour {
 				land = landRight;
 				inAir = inAirRight;
 				sprite.renderer.material.mainTextureScale = new Vector2(0.2F,0.2F);
+				leftButton.renderer.material.mainTextureOffset = new Vector2(0.5F, 0.5F);
+				if(rigidbody.velocity.x < 4){
+					rightButton.renderer.material.mainTextureOffset = new Vector2(0.75F, 0.5F);	
+				}
 			}
 			//animate the correct animation
 			switch(animation){
@@ -201,6 +209,7 @@ public class PlayerMovement : MonoBehaviour {
 	void MoveRight () {
 		if(!is_frozen){
 			rigidbody.velocity = new Vector3(moveSpeed, rigidbody.velocity.y, 0);
+			rightButton.renderer.material.mainTextureOffset = new Vector2(0.75F, 0F);
 		}
 	}
 	
@@ -208,6 +217,7 @@ public class PlayerMovement : MonoBehaviour {
 	void MoveLeft () {
 		if(!is_frozen){
 			rigidbody.velocity = new Vector3(-moveSpeed, rigidbody.velocity.y, 0);
+			leftButton.renderer.material.mainTextureOffset = new Vector2(0.5F, 0F);
 		}
 	}
 	
