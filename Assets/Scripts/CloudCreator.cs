@@ -91,7 +91,7 @@ public class CloudCreator : MonoBehaviour {
 			obstacleCount++;
 			//reset the timer
 			obstacleTimer = Time.time;
-			obstacleDelayTime -= 1/15 * obstacleDelayTime;
+			obstacleDelayTime -= 1/8 * obstacleDelayTime;
 		}
 	}
 	
@@ -101,6 +101,7 @@ public class CloudCreator : MonoBehaviour {
 		}
 		count = 5;
 		obstacleCount = 5;
+		obstacleDelayTime = 3F;
 		Start ();
 	}
 }
