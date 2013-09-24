@@ -15,7 +15,6 @@ public class GUIControls : MonoBehaviour {
 	public GameObject player;
 	static public int score;
 	private bool paused;
-	private bool muted;
 	private int topScore;
 	private bool gameOver = false;
 	static public bool ftue;
@@ -124,16 +123,14 @@ public class GUIControls : MonoBehaviour {
 			pauseButton.renderer.material.mainTextureOffset = new Vector2(pauseButton.renderer.material.mainTextureOffset.x, 0);
 		}
 	}
-	//when mute is hit change the location of the camera to be too far away to hear the music, else move it back.
+	//when mute is hit change the enabled state of the audio listener
 	void MuteButtonTap () {
-		if(muted){
-			mainCamera.GetComponent<AudioListener>().enabled = true;
-			muted = false;
+		if(AudioListener.volume == 0){
+			AudioListener.volume = 1;
 			muteButton.renderer.material.mainTextureOffset = new Vector2(muteButton.renderer.material.mainTextureOffset.x, 0.5F);
 		}
 		else{
-			mainCamera.GetComponent<AudioListener>().enabled = false;
-			muted = true;
+			AudioListener.volume = 0;
 			muteButton.renderer.material.mainTextureOffset = new Vector2(muteButton.renderer.material.mainTextureOffset.x, 0);
 		}
 	}

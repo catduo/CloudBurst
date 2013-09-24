@@ -47,9 +47,9 @@ public class PlayerMovement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//follow the sprite up as it climbs
-		if(transform.position.y > 2){
-			camera.transform.position = new Vector3(0, transform.position.y -2, -30);
-			guiInterface.transform.position = new Vector3(0, transform.position.y -2, 0);
+		if(transform.position.y > 4.5){
+			camera.transform.position = new Vector3(0, transform.position.y -4.5F, -30);
+			guiInterface.transform.position = new Vector3(0, transform.position.y -4.5F, 0);
 		}
 		else{
 			camera.transform.position = new Vector3(0, 0, -30);
