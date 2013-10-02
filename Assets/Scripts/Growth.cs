@@ -14,6 +14,7 @@ public class Growth : MonoBehaviour {
 	public Material bush2;
 	private int animationDelay;
 	private bool onFire;
+	private float fireRate = 0.9F;
 	
 	// Use this for initialization
 	void Start () {
@@ -71,7 +72,22 @@ public class Growth : MonoBehaviour {
 				}
 			}
 			animationDelay = 0;
-			if(Random.value > 0.95  && onFire){
+			if(growthState < 2){
+				fireRate = 0.97F;
+			}
+			else if(growthState < 5){
+				fireRate = 0.95F;
+			}
+			else if(growthState < 10){
+				fireRate = 0.88F;
+			}
+			else if(growthState < 15){
+				fireRate = 0.8F;
+			}
+			else{
+				fireRate = 0.5F;
+			}
+			if(Random.value > fireRate  && onFire){
 				Fire ();
 			}
 		}

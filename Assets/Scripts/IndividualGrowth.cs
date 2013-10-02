@@ -30,10 +30,10 @@ public class IndividualGrowth : MonoBehaviour {
 	//when getting the seedling growth state start growing
 	void SeedlingGrowth () {
 		if(transform.position.z < 11){
-			transform.localScale = new Vector3(startScale / 2F, 1, startScale);
+			transform.localScale = new Vector3(startScale / 1.5F, 1, startScale);
 		}
 		else{
-			transform.localScale = new Vector3(startScale / 3F, 1, startScale);
+			transform.localScale = new Vector3(startScale / 3.5F, 1, startScale);
 		}
 		transform.localPosition = new Vector3(transform.localPosition.x,-6.8F,transform.localPosition.z);
 	}
@@ -41,10 +41,10 @@ public class IndividualGrowth : MonoBehaviour {
 	//when getting the full growth state start growing
 	void FullGrowth () {
 		if(transform.position.z < 11){
-			transform.localScale = new Vector3(startScale / 2F, 1, startScale);
+			transform.localScale = new Vector3(startScale / 1.5F, 1, startScale);
 		}
 		else{
-			transform.localScale = new Vector3(startScale / 3F, 1, startScale);
+			transform.localScale = new Vector3(startScale / 3.5F, 1, startScale);
 		}
 		transform.localPosition = new Vector3(transform.localPosition.x,-6.8F,transform.localPosition.z);
 	}

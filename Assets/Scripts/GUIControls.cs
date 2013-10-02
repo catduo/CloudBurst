@@ -18,18 +18,11 @@ public class GUIControls : MonoBehaviour {
 	private int topScore;
 	private bool gameOver = false;
 	static public bool ftue;
-	private int ftueLocation = -1;
+	private int ftueLocation = 0;
+	static public float timeModifier;
 
 	// Use this for initialization
 	void Start () {
-		PlayerPrefs.DeleteAll();
-		if(PlayerPrefs.GetInt("FTUE") != 1){
-			ftue = true;
-			Time.timeScale = 1;
-		}
-		else{
-			ftue = false;
-		}
 		topScore = PlayerPrefs.GetInt("TopScore");
 		mainCamera = GameObject.Find("MainCamera");
 		FTUE = GameObject.Find("FTUE");
@@ -44,6 +37,7 @@ public class GUIControls : MonoBehaviour {
 		muteButton.renderer.material.mainTextureOffset = new Vector2(0.25F, 0.5F);
 		rightButton.renderer.material.mainTextureOffset = new Vector2(0.75F, 0.5F);
 		FTUETap ();
+		timeModifier = Time.time;
 	}
 	
 	// Update is called once per frame
@@ -136,7 +130,7 @@ public class GUIControls : MonoBehaviour {
 	}
 	//update the score text
 	void UpdateScore () {
-		scoreText.GetComponent<TextMesh>().text = "Score: " + score.ToString();
+		scoreText.GetComponent<TextMesh>().text = score.ToString();
 	}
 	
 	//when a combo happens display the combo count
@@ -170,6 +164,8 @@ public class GUIControls : MonoBehaviour {
 		scoreScreen.transform.position += new Vector3(100,0,0);
 		Time.timeScale = 1;
 		score = 0;
+		UpdateScore();
+		timeModifier = Time.time;
 		GameObject.Find ("Plants").SendMessage("Start");
 		GameObject.Find ("Clouds").SendMessage("Reset");
 		gameOver = false;
@@ -177,23 +173,19 @@ public class GUIControls : MonoBehaviour {
 	
 	void FTUETap () {
 		if(PlayerPrefs.GetInt("FTUE") == 1){
-			Destroy (FTUE);
-		}
-		ftueLocation++;
-		if(ftueLocation > 6){
-			Destroy (FTUE);
-			Time.timeScale = 1;
-			PlayerPrefs.SetInt("FTUE",1);
+			FTUE.GetComponent<FTUE>().HideFTUE();
 		}
 		else{
-			for(int i = 0; i < 7; i++){
-				if(i == ftueLocation){
-					FTUE.transform.GetChild(i).renderer.enabled = true;
-				}
-				else{
-					FTUE.transform.GetChild(i).renderer.enabled = false;
-				}
+			Debug.Log (ftueLocation);
+			if(ftueLocation > 6){
+				FTUE.GetComponent<FTUE>().HideFTUE();
+				Time.timeScale = 1;
+				PlayerPrefs.SetInt("FTUE",1);
 			}
+			else{
+				FTUE.GetComponent<FTUE>().ShowFTUE();
+			}
+			ftueLocation++;
 		}
 	}
 }

@@ -47,7 +47,12 @@ public class CloudCreator : MonoBehaviour {
 			}
 			switch(Mathf.FloorToInt(count)){
 			case 0:
-				cloud = basicCloud1;
+				if(GUIControls.timeModifier + 120 > Time.time){
+					cloud = basicCloud1;
+				}
+				else{
+					cloud = blackCloud1;
+				}
 				break;
 			case 1:
 				cloud = darkCloud1;
