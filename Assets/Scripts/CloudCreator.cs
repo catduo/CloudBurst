@@ -41,21 +41,58 @@ public class CloudCreator : MonoBehaviour {
 		//time the creation of clouds
 		if(Time.time > timer + delayTime){
 			//determine which type of cloud to make
-			count += Random.value;
-			if(count >= 3){
-				count -= 3;
+			count += Random.value * 2;
+			if(count >= 6){
+				count -= 6;
 			}
 			switch(Mathf.FloorToInt(count)){
 			case 0:
+				if(GUIControls.timeModifier + 240 > Time.time){
+					cloud = basicCloud1;
+				}
+				else{
+					cloud = darkCloud1;
+				}
+				break;
+			case 1:
+				if(GUIControls.timeModifier + 60 > Time.time){
+					cloud = basicCloud1;
+				}
+				else{
+					cloud = darkCloud1;
+				}
+				break;
+			case 2:
 				if(GUIControls.timeModifier + 120 > Time.time){
 					cloud = basicCloud1;
+				}
+				else{
+					cloud = darkCloud1;
+				}
+				break;
+			case 3:
+				if(GUIControls.timeModifier + 30 > Time.time){
+					cloud = darkCloud1;
 				}
 				else{
 					cloud = blackCloud1;
 				}
 				break;
-			case 1:
-				cloud = darkCloud1;
+			case 4:
+				if(GUIControls.timeModifier + 90 > Time.time){
+					cloud = darkCloud1;
+				}
+				else{
+					cloud = blackCloud1;
+				}
+				break;
+			case 5:
+				if(GUIControls.timeModifier + 180 > Time.time){
+					cloud = darkCloud1;
+				}
+				else{
+					cloud = blackCloud1;
+				}
 				break;
 			default:
 				cloud = blackCloud1;

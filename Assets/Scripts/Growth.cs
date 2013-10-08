@@ -5,8 +5,9 @@ public class Growth : MonoBehaviour {
 	
 	private int numPlants = 50;
 	private Transform[] plants;
-	private int growthState = 0;
-	private int initialGrowth = 5;
+	public static int growthState = 0;
+	static public int initialGrowth = 5;
+	private TextMesh growthStateText;
 	private GameObject sparks;
 	public Material tree1;
 	public Material tree2;
@@ -18,9 +19,14 @@ public class Growth : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		initialGrowth = PlayerPrefs.GetInt("Growth");
+		if(initialGrowth < 5){
+			initialGrowth = 5;
+		}			
 		//set the lightning sparks and fire objects
 		onFire = false;
 		sparks = GameObject.Find ("Sparks");
+		growthStateText = GameObject.Find ("GrowthState").GetComponent<TextMesh>();
 		//setup the plants so that you have all of them in one big array.
 		plants = new Transform[numPlants];
 		for(int i = 0; i < numPlants; i++){
@@ -72,20 +78,20 @@ public class Growth : MonoBehaviour {
 				}
 			}
 			animationDelay = 0;
-			if(growthState < 2){
+			if(GUIControls.timeModifier + 15 > Time.time){
+				fireRate = 0.99F;
+			}
+			else if(GUIControls.timeModifier + 30 > Time.time){
+				fireRate = 0.98F;
+			}
+			else if(GUIControls.timeModifier + 60 > Time.time){
 				fireRate = 0.97F;
 			}
-			else if(growthState < 5){
-				fireRate = 0.95F;
-			}
-			else if(growthState < 10){
-				fireRate = 0.88F;
-			}
-			else if(growthState < 15){
-				fireRate = 0.8F;
+			else if(GUIControls.timeModifier + 90 > Time.time){
+				fireRate = 0.96F;
 			}
 			else{
-				fireRate = 0.5F;
+				fireRate = 0.95F;
 			}
 			if(Random.value > fireRate  && onFire){
 				Fire ();
@@ -101,18 +107,20 @@ public class Growth : MonoBehaviour {
 	
 	void Grow () {
 		//only grow if there is room to grow
-		if(growthState < 100){
+		if(growthState < 80){
 			//select a random plant
 			int selectedPlant = Mathf.FloorToInt(Random.value * numPlants);
 			// if it isn't an adult or sapling grow to be a sapling
 			if(plants[selectedPlant].renderer.material.mainTextureOffset.x > 0.125F){
 				growthState +=1;
+				growthStateText.text = growthState.ToString() + "/80";
 				plants[selectedPlant].gameObject.SendMessage("SeedlingGrowth");
 				plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0F, 0.5F);
 			}
 			//if it is sapling, make it adult
 			else if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0F){
 				growthState +=1;
+				growthStateText.text = growthState.ToString() + "/80";
 				plants[selectedPlant].gameObject.SendMessage("FullGrowth");
 				plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0.125F, 0.5F);
 			}
@@ -120,6 +128,9 @@ public class Growth : MonoBehaviour {
 			else{
 				Grow ();
 			}
+		}
+		else{
+			Win ();
 		}
 	}
 	
@@ -133,12 +144,14 @@ public class Growth : MonoBehaviour {
 					//if it was a sapling, kill it
 					if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0F){
 						growthState -= 1;
+						growthStateText.text = growthState.ToString() + "/80";
 						plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0.25F, 0.5F);
 						break;
 					}
 					//if it was a fully grown tree, kill it
 					else if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0.125F){
 						growthState -= 2;
+						growthStateText.text = growthState.ToString() + "/80";
 						plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0.25F, 0.5F);
 						break;
 					}
@@ -167,11 +180,13 @@ public class Growth : MonoBehaviour {
 				//if it was a sapling, kill it
 				if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0F){
 					growthState -= 1;
+					growthStateText.text = growthState.ToString() + "/80";
 					plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0.25F, 0F);
 				}
 				//if it was a fully grown tree, kill it
 				else if(plants[selectedPlant].renderer.material.mainTextureOffset.x == 0.125F){
 					growthState -= 2;
+					growthStateText.text = growthState.ToString() + "/80";
 					plants[selectedPlant].renderer.material.mainTextureOffset = new Vector2(0.25F, 0F);
 				}
 				//dead trees can catch on fire
@@ -212,6 +227,7 @@ public class Growth : MonoBehaviour {
 						sparks.transform.position = plants[selectedPlant].transform.position;
 						sparks.GetComponent<ParticleSystem>().Play();
 						growthState -= 1;
+						growthStateText.text = growthState.ToString() + "/80";
 						Fire (selectedPlant);
 						break;
 					}
@@ -220,6 +236,7 @@ public class Growth : MonoBehaviour {
 						sparks.transform.position = plants[selectedPlant].transform.position;
 						sparks.GetComponent<ParticleSystem>().Play();
 						growthState -= 2;
+						growthStateText.text = growthState.ToString() + "/80";
 						Fire (selectedPlant);
 						break;
 					}
@@ -234,5 +251,49 @@ public class Growth : MonoBehaviour {
 	void Lose () {
 		onFire = false;
 		GameObject.Find("GUI").SendMessage("GameOver");
+	}
+	
+	void Win () {
+		GUIControls.score *= 5;
+		onFire = false;
+		GameObject.Find("GUI").SendMessage("GameOver");
+	}
+	
+	void Reset () {//set the lightning sparks and fire objects
+		onFire = false;
+		growthState = 0;
+		//setup the plants so that you have all of them in one big array.
+		plants = new Transform[numPlants];
+		for(int i = 0; i < numPlants; i++){
+			plants[i] = transform.GetChild(i);
+			if(plants[i].transform.localPosition.z == 15){
+				//if it is in the back row make it a random tree
+				if(Random.value < 0.5f){
+					plants[i].renderer.material = tree1;
+				}
+				else{
+					plants[i].renderer.material = tree2;
+				}
+				plants[i].renderer.material.mainTextureScale = new Vector2(0.123F, 0.49F);
+				plants[i].renderer.material.mainTextureOffset = new Vector2(0.5F, 0.5F);
+			}
+			else{
+				// if it is in the front row make it a random bush
+				if(Random.value < 0.5f){
+					plants[i].renderer.material = bush1;
+				}
+				else{
+					plants[i].renderer.material = bush2;
+				}
+				plants[i].renderer.material.mainTextureScale = new Vector2(0.125F, 0.49F);
+				plants[i].renderer.material.mainTextureOffset = new Vector2(0.5F, 0.5F);
+			}
+		}
+		if(!GUIControls.ftue){
+			for(int i = 0; i < initialGrowth; i++){
+				//start out with some initial growth for the player
+				Grow();
+			}
+		}
 	}
 }

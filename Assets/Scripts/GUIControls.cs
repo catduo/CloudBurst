@@ -13,6 +13,7 @@ public class GUIControls : MonoBehaviour {
 	private GameObject scoreScreen;
 	private GameObject FTUE;
 	public GameObject player;
+	public TextMesh gameOverText;
 	static public int score;
 	private bool paused;
 	private int topScore;
@@ -23,6 +24,7 @@ public class GUIControls : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		Application.targetFrameRate = 24;
 		topScore = PlayerPrefs.GetInt("TopScore");
 		mainCamera = GameObject.Find("MainCamera");
 		FTUE = GameObject.Find("FTUE");
@@ -157,6 +159,15 @@ public class GUIControls : MonoBehaviour {
 			GameObject.Find ("ThisScore").GetComponent<TextMesh>().text = "This Round: " + score.ToString();
 			scoreScreen.transform.position -= new Vector3(100,0,0);
 			gameOver = true;
+			if(Growth.growthState >= 80){
+				gameOverText.text = "Victory!";
+				Growth.initialGrowth = 5;
+			}
+			else{
+				Growth.initialGrowth += Mathf.RoundToInt(score / 1000) + 1;
+				gameOverText.text = "Game Over";
+			}
+			PlayerPrefs.SetInt("Growth", Growth.initialGrowth);
 		}
 	}
 	
@@ -166,7 +177,7 @@ public class GUIControls : MonoBehaviour {
 		score = 0;
 		UpdateScore();
 		timeModifier = Time.time;
-		GameObject.Find ("Plants").SendMessage("Start");
+		GameObject.Find ("Plants").SendMessage("Reset");
 		GameObject.Find ("Clouds").SendMessage("Reset");
 		gameOver = false;
 	}
@@ -176,8 +187,7 @@ public class GUIControls : MonoBehaviour {
 			FTUE.GetComponent<FTUE>().HideFTUE();
 		}
 		else{
-			Debug.Log (ftueLocation);
-			if(ftueLocation > 6){
+			if(ftueLocation > 8){
 				FTUE.GetComponent<FTUE>().HideFTUE();
 				Time.timeScale = 1;
 				PlayerPrefs.SetInt("FTUE",1);
