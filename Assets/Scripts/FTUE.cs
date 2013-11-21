@@ -12,7 +12,7 @@ public class FTUE : MonoBehaviour {
 	public Transform ftueCollider;
 	public Transform mainCamera;
 	public Transform ftueImages;
-	private int ftueLocation = 0;
+	public int ftueLocation = 0;
 	
 	// Use this for initialization
 	void Start () {
@@ -44,14 +44,12 @@ public class FTUE : MonoBehaviour {
 	}
 	
 	public void ShowFTUE() {
-		Debug.Log (ftueImages.FindChild("FtueImages" + (ftueLocation + 1).ToString()).childCount);
 		if(ftueLocation > 0){
 			for(int i = 0; i < ftueImages.FindChild("FtueImages" + (ftueLocation).ToString()).childCount; i++){
 				ftueImages.FindChild("FtueImages" + (ftueLocation).ToString()).GetChild(i).renderer.enabled = false;
 			}
 		}
 		for(int i = 0; i < ftueImages.FindChild("FtueImages" + (ftueLocation + 1).ToString()).childCount; i++){
-			Debug.Log ("run1");
 			ftueImages.FindChild("FtueImages" + (ftueLocation + 1).ToString()).GetChild(i).renderer.enabled = true;
 		}
 		ftueCollider.position = new Vector3(0,0,mainCamera.position.z + 3F);
@@ -61,7 +59,12 @@ public class FTUE : MonoBehaviour {
 		ftueTitleTextMesh.renderer.enabled = true;
 		ftueTextMesh.text = ftueText[ftueLocation];
 		ftueTitleTextMesh.text = ftueTitle[ftueLocation];
-		ftueLocation ++;
+		if(ftueLocation >7){
+			ftueLocation = 0;
+		}
+		else{
+			ftueLocation ++;
+		}
 	}
 	public void HideFTUE() {
 		if(ftueLocation > 0){

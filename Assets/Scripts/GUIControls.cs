@@ -38,6 +38,10 @@ public class GUIControls : MonoBehaviour {
 		pauseButton.renderer.material.mainTextureOffset = new Vector2(0, 0.5F);
 		muteButton.renderer.material.mainTextureOffset = new Vector2(0.25F, 0.5F);
 		rightButton.renderer.material.mainTextureOffset = new Vector2(0.75F, 0.5F);
+		pauseButton.transform.position = new Vector3 (mainCamera.transform.position.x - mainCamera.camera.ScreenToWorldPoint(new Vector3(mainCamera.camera.pixelWidth, 0, 0)).x + 1, pauseButton.transform.position.y, -25);
+		muteButton.transform.position = new Vector3 (mainCamera.transform.position.x - mainCamera.camera.ScreenToWorldPoint(new Vector3(mainCamera.camera.pixelWidth, 0, 0)).x + 3, muteButton.transform.position.y, -25);
+		rightButton.transform.position = new Vector3 (mainCamera.transform.position.x + mainCamera.camera.ScreenToWorldPoint(new Vector3(mainCamera.camera.pixelWidth, 0, 0)).x - 1, rightButton.transform.position.y, -25);
+		leftButton.transform.position = new Vector3 (mainCamera.transform.position.x + mainCamera.camera.ScreenToWorldPoint(new Vector3(mainCamera.camera.pixelWidth, 0, 0)).x - 3, leftButton.transform.position.y, -25);
 		FTUETap ();
 		timeModifier = Time.time;
 	}
@@ -111,12 +115,17 @@ public class GUIControls : MonoBehaviour {
 		if(paused){
 			Time.timeScale = 1;
 			paused = false;
+			FTUE.GetComponent<FTUE>().HideFTUE();
 			pauseButton.renderer.material.mainTextureOffset = new Vector2(pauseButton.renderer.material.mainTextureOffset.x, 0.5F);
 		}
 		else{
+			FTUE.GetComponent<FTUE>().ftueLocation = 0;
 			paused = true;
 			Time.timeScale = 0;
 			pauseButton.renderer.material.mainTextureOffset = new Vector2(pauseButton.renderer.material.mainTextureOffset.x, 0);
+			ftueLocation = 0;
+			pauseButton.transform.position = new Vector3(pauseButton.transform.position.x,pauseButton.transform.position.y,mainCamera.transform.position.z + 2);
+			FTUE.GetComponent<FTUE>().ShowFTUE();
 		}
 	}
 	//when mute is hit change the enabled state of the audio listener
@@ -183,11 +192,11 @@ public class GUIControls : MonoBehaviour {
 	}
 	
 	void FTUETap () {
-		if(PlayerPrefs.GetInt("FTUE") == 1){
+		if(PlayerPrefs.GetInt("FTUE") == 1 && !paused){
 			FTUE.GetComponent<FTUE>().HideFTUE();
 		}
 		else{
-			if(ftueLocation > 8){
+			if(ftueLocation > 8 &!paused){
 				FTUE.GetComponent<FTUE>().HideFTUE();
 				Time.timeScale = 1;
 				PlayerPrefs.SetInt("FTUE",1);
@@ -195,7 +204,12 @@ public class GUIControls : MonoBehaviour {
 			else{
 				FTUE.GetComponent<FTUE>().ShowFTUE();
 			}
-			ftueLocation++;
+			if(ftueLocation > 7){
+				ftueLocation=0;
+			}
+			else{
+				ftueLocation++;
+			}
 		}
 	}
 }
