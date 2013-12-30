@@ -61,6 +61,10 @@ public class FTUE : MonoBehaviour {
 		ftueTitleTextMesh.text = ftueTitle[ftueLocation];
 		if(ftueLocation >7){
 			ftueLocation = 0;
+			Time.timeScale = 1;
+			GameObject.Find ("GUI").GetComponent<GUIControls>().paused = false;
+			HideFTUE();
+			GameObject.Find ("GUI").GetComponent<GUIControls>().pauseButton.renderer.material.mainTextureOffset = new Vector2(GameObject.Find ("GUI").GetComponent<GUIControls>().pauseButton.renderer.material.mainTextureOffset.x, 0.5F);
 		}
 		else{
 			ftueLocation ++;

@@ -4,7 +4,7 @@ using System.Collections;
 public class GUIControls : MonoBehaviour {
 	
 	private GameObject leftButton;
-	private GameObject pauseButton;
+	public GameObject pauseButton;
 	private GameObject rightButton;
 	private GameObject muteButton;
 	private GameObject mainCamera;
@@ -15,7 +15,7 @@ public class GUIControls : MonoBehaviour {
 	public GameObject player;
 	public TextMesh gameOverText;
 	static public int score;
-	private bool paused;
+	public bool paused;
 	private int topScore;
 	private bool gameOver = false;
 	static public bool ftue;
@@ -24,6 +24,7 @@ public class GUIControls : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		PlayerPrefs.DeleteAll();
 		Application.targetFrameRate = 24;
 		topScore = PlayerPrefs.GetInt("TopScore");
 		mainCamera = GameObject.Find("MainCamera");
@@ -206,6 +207,10 @@ public class GUIControls : MonoBehaviour {
 			}
 			if(ftueLocation > 7){
 				ftueLocation=0;
+				Time.timeScale = 1;
+				paused = false;
+				FTUE.GetComponent<FTUE>().HideFTUE();
+				pauseButton.renderer.material.mainTextureOffset = new Vector2(pauseButton.renderer.material.mainTextureOffset.x, 0.5F);
 			}
 			else{
 				ftueLocation++;
